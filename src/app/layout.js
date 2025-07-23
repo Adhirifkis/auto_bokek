@@ -20,9 +20,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className=" text-[#453b07] antialiased"
+        style={{
+          fontFamily: "sans-serif",
+        }}
       >
-        {children}
+        <div className="min-h-screen w-full px-4 py-8">{children}</div>
       </body>
     </html>
   );

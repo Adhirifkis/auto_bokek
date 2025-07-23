@@ -1,0 +1,105 @@
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+model User {
+  id         String        @id @default(cuid())
+  name       String
+  email      String        @unique
+  provider   String?
+  password   String
+  avatarUrl  String?
+  created_at DateTime      @default(now())
+  updated_at DateTime      @updatedAt
+  budget     Budget[]
+  insight    Insight[]
+  notifikasi Notifikasi[]
+  profile    Profile?
+  transaksi  Transaction[]
+  session    Session[]
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Profile {
+  id       String  @id @default(cuid())
+  bio      String?
+  github   String?
+  linkedin String?
+  phone    String?
+  userId   String  @unique
+  user     User    @relation(fields: [userId], references: [id])
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  judul       String
+  nominal     Decimal
+  tanggal     DateTime
+  jam         DateTime
+  catatan     String?
+  bukti_url   String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  user_id     String
+  kategori_id String
+  kategori    Kategori @relation(fields: [kategori_id], references: [id])
+  user        User     @relation(fields: [user_id], references: [id])
+}
+
+model Kategori {
+  id            String        @id @default(cuid())
+  name_kategori String
+  tipe          String
+  budgets       Budget[]
+  notifikasis   Notifikasi[]
+  transaksi     Transaction[]
+}
+
+model Budget {
+  id             String   @id @default(cuid())
+  nominal_budget Decimal
+  periode        String
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  user_id        String
+  kategori_id    String
+  kategori       Kategori @relation(fields: [kategori_id], references: [id])
+  user           User     @relation(fields: [user_id], references: [id])
+}
+
+model Insight {
+  id                String   @id @default(cuid())
+  prediksi_json     String
+  saran_penghematan String
+  generated_at      DateTime @default(now())
+  user_id           String
+  user              User     @relation(fields: [user_id], references: [id])
+}
+
+model Notifikasi {
+  id                  String   @id @default(cuid())
+  isi_pesan           String
+  tipe_pesan          String
+  terkait_kategori_id String
+  status_baca         Boolean  @default(false)
+  created_at          DateTime @default(now())
+  user_id             String
+  kategori            Kategori @relation(fields: [terkait_kategori_id], references: [id])
+  user                User     @relation(fields: [user_id], references: [id])
+}
