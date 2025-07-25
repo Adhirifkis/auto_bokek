@@ -6,6 +6,7 @@ import Link from "next/link";
 import { loginAction } from "../action";
 import { AlertState } from "@/components/shared/alert-state";
 import { useActionState } from "react";
+import { SocialLogin } from "../_components/social-login";
 
 export default function Page() {
   const [state, action, pending] = useActionState(loginAction, null);
@@ -28,6 +29,7 @@ export default function Page() {
         <p>
           Don&apos;t have an account? <Link href="/register">Register</Link>
         </p>
+        <SocialLogin />
       </section>
     </div>
   );
