@@ -4,6 +4,8 @@ import { getUserByEmail, createUser } from "@/services/user";
 import { createSession, verifyPassword } from "@/services/auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import * as arctic from "arctic";
+import { google } from "@/utils/arctic";
 
 export async function loginAction(_, formData) {
   const cookieStore = await cookies();
@@ -54,4 +56,18 @@ export async function registerAction(_, formData) {
 
   const newUser = await createUser(name, email, password);
   return { success: "User created successfully", user: newUser };
+}
+
+export async function googleLoginAction() {
+  const cookieStore = await cookies();
+
+  const state = arctic.generateState();
+  const codeVerifier = arctic.generateCodeVerifier();
+  const scopes = ["openid", "profile", "email"];
+
+  const url = google.createAuthorizationURL(state, codeVerifier, scopes);
+
+  cookieStore.set("codeVerifier", codeVerifier);
+
+  redirect(url);
 }
