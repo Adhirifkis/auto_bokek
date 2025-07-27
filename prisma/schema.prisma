@@ -1,7 +1,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -9,13 +8,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-
 model User {
   id         String        @id @default(cuid())
   name       String
   email      String        @unique
-  provider   String?
+  provider   String
   password   String
   avatarUrl  String?
   created_at DateTime      @default(now())
@@ -24,15 +21,15 @@ model User {
   insight    Insight[]
   notifikasi Notifikasi[]
   profile    Profile?
+  Session    Session[]
   transaksi  Transaction[]
-  session    Session[]
 }
 
 model Session {
-  id        String   @id @default(uuid())
+  id        String   @id
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
+  User      User     @relation(fields: [userId], references: [id])
   updatedAt DateTime @updatedAt
 }
 
@@ -49,9 +46,9 @@ model Profile {
 model Transaction {
   id          String   @id @default(cuid())
   judul       String
-  nominal     Decimal
-  tanggal     DateTime
-  jam         DateTime
+  nominal     Int
+  tanggal     DateTime @db.Date
+  jam         DateTime @db.Time(6)
   catatan     String?
   bukti_url   String?
   created_at  DateTime @default(now())
