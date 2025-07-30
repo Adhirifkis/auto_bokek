@@ -36,7 +36,7 @@ export async function loginAction(_, formData) {
     path: "/",
   });
 
-  redirect("/");
+  redirect("/dashboard");
 }
 
 export async function registerAction(_, formData) {
