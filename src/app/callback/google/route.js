@@ -6,7 +6,7 @@ import { randomUUID } from "crypto";
 import { serialize } from "cookie";
 
 export async function GET(request) {
-  const cookieStore = await cookies();
+  const cookieStore = cookies();
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const codeVerifier = cookieStore.get("codeVerifier")?.value;
@@ -37,10 +37,12 @@ export async function GET(request) {
 
     const userData = await res.json();
 
+    // Cari user berdasarkan email
     let user = await prisma.user.findUnique({
       where: { email: userData.email },
     });
 
+    // Buat user baru jika belum ada
     if (!user) {
       user = await prisma.user.create({
         data: {
@@ -51,18 +53,27 @@ export async function GET(request) {
       });
     }
 
+    // Hapus session sebelumnya (opsional)
+    await prisma.session.deleteMany({
+      where: { userId: user.id },
+    });
+
+    // Buat session baru
+    const sessionId = randomUUID();
     const session = await prisma.session.create({
       data: {
-        id: randomUUID(),
+        id: sessionId,
         userId: user.id,
+        tokenSession: randomUUID(), // karena tokenSession itu required dan unique
       },
     });
 
+    // Set cookie
     const cookie = serialize("sessionId", session.id, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 60 * 60 * 24 * 30,
+      maxAge: 60 * 60 * 24 * 30, // 30 hari
       sameSite: "lax",
     });
 

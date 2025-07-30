@@ -1,5 +1,6 @@
 import prisma from "@/utils/prisma";
 import bcrypt from "bcrypt";
+import { randomUUID } from "crypto";
 
 export async function hashPassword(password) {
   return await bcrypt.hash(password, 10);
@@ -10,9 +11,30 @@ export async function verifyPassword(password, hashedPassword) {
 }
 
 export async function createSession(userId) {
-  return await prisma.session.create({
-    data: { userId },
-  });
+  console.log("Create session for userId:", userId);
+
+  try {
+    // Validasi userId
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new Error("User tidak ditemukan.");
+    }
+
+    const session = await prisma.session.create({
+      data: {
+        userId,
+        tokenSession: randomUUID(),
+      },
+    });
+
+    return session;
+  } catch (error) {
+    console.error("Gagal membuat session:", error.message, error);
+    throw new Error("Gagal membuat session.");
+  }
 }
 
 export async function getSession(sessionId) {
