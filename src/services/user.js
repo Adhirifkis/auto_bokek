@@ -4,7 +4,13 @@ import { hashPassword } from "./auth";
 export async function createUser(name, email, password) {
   const hashedPassword = await hashPassword(password);
   const user = await prisma.user.create({
-    data: { name, email, password: hashedPassword, provider: "credentials" },
+    data: {
+      name,
+      email,
+      password: hashedPassword,
+      provider: "google",
+      password: crypto.randomUUID(),
+    },
   });
 
   return {

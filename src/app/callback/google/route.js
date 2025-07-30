@@ -6,7 +6,7 @@ import { randomUUID } from "crypto";
 import { serialize } from "cookie";
 
 export async function GET(request) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const codeVerifier = cookieStore.get("codeVerifier")?.value;
@@ -49,6 +49,8 @@ export async function GET(request) {
           email: userData.email,
           name: userData.name,
           avatarUrl: userData.picture,
+          provider: "google",
+          password: crypto.randomUUID(),
         },
       });
     }
@@ -85,7 +87,7 @@ export async function GET(request) {
       },
     });
   } catch (error) {
-    console.error("OAuth callback error:", error);
-    return new Response("OAuth callback error", { status: 500 });
+    console.error("Google login error:", error);
+    return new Response("Internal Server Error", { status: 500 });
   }
 }
