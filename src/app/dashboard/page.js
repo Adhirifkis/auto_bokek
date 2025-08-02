@@ -1,7 +1,8 @@
 import prisma from "@/utils/prisma";
-import { getAuthSession } from "@/lib/auth";
+import { getAuthSession } from "@/lib/auth/getAuthSession";
 import Link from "next/link";
 import TransactionChart from "@/components/TransactionChart";
+import { redirect } from "next/navigation";
 
 const ArrowUpIcon = (props) => (
   <svg
@@ -123,28 +124,15 @@ const processDataForChart = (transactions) => {
 export default async function DashboardPage() {
   const session = await getAuthSession();
   if (!session || !session.user) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-center p-8 bg-white rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold mb-4">Akses Ditolak</h2>
-          <p>Silakan login dulu untuk melihat dashboard.</p>
-          <Link
-            href="/api/auth/signin"
-            className="mt-6 inline-block bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 font-semibold transition-colors"
-          >
-            Login
-          </Link>
-        </div>
-      </div>
-    );
+    redirect("/login");
   }
 
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const transactions = await prisma.Transaction.findMany({
+  const transactions = await prisma.transaction.findMany({
     where: {
-      user_id: session.user.id,
+      user_id: session.userId,
       tanggal: { gte: thirtyDaysAgo },
     },
     include: { kategori: true },
@@ -176,7 +164,7 @@ export default async function DashboardPage() {
           <div>
             <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
             <p className="text-lg text-gray-600">
-              Selamat datang kembali, {session.user.name}!
+              Selamat datang kembali, {session.name}!
             </p>
           </div>
           <Link

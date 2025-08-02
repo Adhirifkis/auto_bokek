@@ -1,6 +1,7 @@
 import prisma from "@/utils/prisma";
 import bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
+import { NextResponse } from "next/server";
 
 export async function hashPassword(password) {
   return await bcrypt.hash(password, 10);
