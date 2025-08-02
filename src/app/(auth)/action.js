@@ -1,11 +1,12 @@
 "use server";
 
 import { getUserByEmail, createUser } from "@/services/user";
-import { createSession, verifyPassword } from "@/services/auth";
+import { createSession, getSession, verifyPassword } from "@/services/auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import * as arctic from "arctic";
 import { google } from "@/utils/arctic";
+import { deleteSession } from "@/services/auth";
 
 export async function loginAction(_, formData) {
   const cookieStore = await cookies();
@@ -70,4 +71,16 @@ export async function googleLoginAction() {
   cookieStore.set("codeVerifier", codeVerifier);
 
   redirect(url);
+}
+
+export async function logoutAction(_, formData) {
+  const cookieStore = cookies();
+  const sessionId = cookieStore.get("sessionId")?.value;
+
+  if (sessionId) {
+    await deleteSession(sessionId);
+    cookieStore.delete("sessionId");
+  }
+
+  redirect("/");
 }
