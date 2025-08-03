@@ -18,16 +18,36 @@ export default function Page() {
         <p>Login to your account</p>
       </section>
       <form className="flex flex-col gap-2" action={action}>
-        <Input name="email" type="email" placeholder="Email" />
-        <Input name="password" type="password" placeholder="Password" />
-        <Button type="submit" disabled={pending}>
+        <Input
+          className="shadow-2xl bg-amber-100"
+          name="email"
+          type="email"
+          placeholder="Email"
+        />
+        <Input
+          className="shadow-2xl bg-amber-100"
+          name="password"
+          type="password"
+          placeholder="Password"
+        />
+        <Button
+          className="cursor-pointer transition-transform hover:scale-103"
+          type="submit"
+          disabled={pending}
+        >
           {pending ? "Logging in..." : "Login"}
         </Button>
         <AlertState success={state?.success} error={state?.error} />
       </form>
       <section>
-        <p>
-          Don&apos;t have an account? <Link href="/register">Register</Link>
+        <p className="gap-5">
+          Dont have an account?{" "}
+          <Link
+            className="text-blue-800 cursor-pointer transition-transform hover:scale-103"
+            href="/register"
+          >
+            Register
+          </Link>
         </p>
         <SocialLogin />
       </section>

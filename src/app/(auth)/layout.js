@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function Layout({ children }) {
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-gradient-to-b from-blue-100 to-blue-400">
       <div className="hidden md:flex w-1/2 relative bg-muted">
         <Image
           src="/1.webp"
@@ -21,13 +21,16 @@ export default function Layout({ children }) {
       <div className="w-full md:w-1/2 flex items-center justify-center relative px-4">
         <div className="absolute top-0 left-0 p-4 w-full flex justify-between items-center">
           <div className="font-bold md:hidden">Logo</div>
-          <Link href="/" className="text-sm flex items-center gap-2">
+          <Link
+            href="/"
+            className=" cursor-pointer transition-transform hover:scale-103 text-sm flex items-center gap-2"
+          >
             <ArrowLeft size={14} />
-            Back to Home
+            Back to Home 🏡
           </Link>
         </div>
 
-        <main className="w-full max-w-sm">{children}</main>
+        <main className="w-full max-w-sm ">{children}</main>
       </div>
     </div>
   );

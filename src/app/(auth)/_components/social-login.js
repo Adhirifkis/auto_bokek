@@ -12,8 +12,12 @@ export const SocialLogin = () => {
   };
 
   return (
-    <Button className="w-full" variant="secondary" onClick={handleGoogleLogin}>
-      Continue with Google
+    <Button
+      className="w-full cursor-pointer transition-transform hover:scale-105 gap-2.5"
+      variant="outline"
+      onClick={handleGoogleLogin}
+    >
+      Continue with Google 🅖
     </Button>
   );
 };
