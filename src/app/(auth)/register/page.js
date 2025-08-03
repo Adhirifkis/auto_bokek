@@ -21,14 +21,24 @@ export default function Page() {
         <Input name="name" type="text" placeholder="Name" />
         <Input name="email" type="email" placeholder="Email" />
         <Input name="password" type="password" placeholder="Password" />
-        <Button type="submit" disabled={pending}>
+        <Button
+          className="cursor-pointer transition-transform hover:scale-103"
+          type="submit"
+          disabled={pending}
+        >
           {pending ? "Registering..." : "Register"}
         </Button>
         <AlertState success={state?.success} error={state?.error} />
       </form>
       <section>
         <p>
-          Already have an account? <Link href="/login">Login</Link>
+          Already have an account?{" "}
+          <Link
+            className="text-blue-800 cursor-pointer transition-transform hover:scale-103"
+            href="/login"
+          >
+            Login
+          </Link>
         </p>
       </section>
     </div>
