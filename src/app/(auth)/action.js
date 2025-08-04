@@ -30,7 +30,7 @@ export async function loginAction(_, formData) {
   }
 
   const session = await createSession(user.id);
-  cookieStore.set("session", session.id, {
+  cookieStore.set("sessionId", session.id, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 24 * 30,
