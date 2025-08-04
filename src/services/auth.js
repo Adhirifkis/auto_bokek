@@ -1,6 +1,7 @@
 import prisma from "@/utils/prisma";
 import bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function hashPassword(password) {
@@ -38,7 +39,11 @@ export async function createSession(userId) {
   }
 }
 
-export async function getSession(sessionId) {
+export async function getSession() {
+  const cookieStore = await cookies();
+  const sessionId = cookieStore.get("sessionId")?.value;
+  if (!sessionId) return null;
+
   return await prisma.session.findUnique({
     where: { id: sessionId },
     include: {
