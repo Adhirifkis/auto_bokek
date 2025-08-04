@@ -248,6 +248,12 @@ export default function Home() {
         >
           Kembali ke Dashboard
         </Link>
+        <Link
+          href="/kategori"
+          className="bg-gray-500 text-white px-5 py-2 rounded-md hover:bg-gray-600 font-semibold shadow-sm"
+        >
+          Kelola Kategori
+        </Link>
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow-md mb-8 max-w-2xl mx-auto">

@@ -1,0 +1,32 @@
+// File: src/lib/session.js
+import { cookies } from 'next/headers';
+import { prisma } from '@/lib/prisma'; // Pastikan path prisma client benar
+
+export async function getSessionUser() {
+    const cookieStore = cookies();
+    const sessionId = cookieStore.get('session')?.value;
+
+    if (!sessionId) {
+        return null;
+    }
+
+    const session = await prisma.session.findUnique({
+        where: { id: sessionId },
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                },
+            },
+        },
+    });
+
+    if (!session) {
+        return null;
+    }
+
+    // Kembalikan objek user jika sesi valid
+    return session.user;
+}
