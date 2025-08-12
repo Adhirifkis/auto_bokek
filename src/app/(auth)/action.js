@@ -65,7 +65,7 @@ export async function googleLoginAction() {
   const state = arctic.generateState();
   const codeVerifier = arctic.generateCodeVerifier();
   const scopes = ["openid", "profile", "email"];
-
+  console.log("🚀 codeVerifier (production check):", codeVerifier);
   const url = google.createAuthorizationURL(state, codeVerifier, scopes);
 
   cookieStore.set("codeVerifier", codeVerifier);
@@ -74,7 +74,7 @@ export async function googleLoginAction() {
 }
 
 export async function logoutAction(_, formData) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const sessionId = cookieStore.get("sessionId")?.value;
 
   if (sessionId) {
