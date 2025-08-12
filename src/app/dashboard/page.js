@@ -3,6 +3,7 @@ import { getAuthSession } from "@/lib/auth/getAuthSession";
 import Link from "next/link";
 import TransactionChart from "@/components/TransactionChart";
 import { redirect } from "next/navigation";
+import FinancialCheckButton from "../api/_openAi/FinancialchekButton";
 
 const ArrowUpIcon = (props) => (
   <svg
@@ -121,6 +122,21 @@ const processDataForChart = (transactions) => {
     .map(({ sortableDate, ...rest }) => rest);
 };
 
+const cekKeuangan = async () => {
+  setLoading(true);
+  try {
+    const res = await fetch("/api/ai-financial-check", {
+      method: "POST",
+    });
+    const data = await res.json();
+    setHasil(data.message);
+  } catch (err) {
+    console.error(err);
+    setHasil("Gagal mengambil data");
+  }
+  setLoading(false);
+};
+
 export default async function DashboardPage() {
   const session = await getAuthSession();
   if (!session || !session.user) {
@@ -173,8 +189,10 @@ export default async function DashboardPage() {
           >
             <span>Tambah Transaksi</span>
           </Link>
+          <FinancialCheckButton />
         </div>
 
+        <div></div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-xl shadow-md flex items-center gap-6">
             <div className="bg-green-100 p-3 rounded-full">
