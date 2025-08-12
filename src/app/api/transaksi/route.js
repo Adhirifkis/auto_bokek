@@ -45,7 +45,10 @@ export async function POST(request) {
         { status: 400 }
       );
     }
-    const timeOnly = transactionTimestamp.toTimeString().slice(0, 8);
+    const timeFull = transactionTimestamp
+      .toISOString()
+      .replace("T", " ")
+      .slice(0, 19);
     const client = await pool.connect();
     const now = new Date();
     const userIdFromSession = session.user.id;
@@ -57,7 +60,7 @@ export async function POST(request) {
       judul,
       parseFloat(nominal),
       transactionTimestamp,
-      timeOnly,
+      timeFull,
       catatan,
       bukti_url,
       now,

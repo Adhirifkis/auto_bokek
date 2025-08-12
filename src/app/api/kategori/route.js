@@ -21,25 +21,23 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    const { name_kategori, tipe } = await request.json();
-    if (!name_kategori || !tipe) {
-      return NextResponse.json(
-        { message: "Nama kategori dan tipe harus diisi" },
-        { status: 400 }
-      );
-    }
+    const body = await request.json();
+    const { name_kategori, tipe } = body;
+
     const client = await pool.connect();
-    const newId = randomUUID();
-    const queryText =
-      'INSERT INTO "Kategori"(id, name_kategori, tipe) VALUES($1, $2, $3) RETURNING *';
-    const values = [{ newId, name_kategori, tipe }];
-    const result = await client.query(queryText, values);
+    const result = await client.query(
+      `INSERT INTO "Kategori" (id, name_kategori, tipe)
+       VALUES ($1, $2, $3)
+       RETURNING *`,
+      [randomUUID(), name_kategori, tipe]
+    );
     client.release();
-    return NextResponse.json(result.rows[0], { status: 201 });
+
+    return NextResponse.json(name_kategori);
   } catch (error) {
-    console.error("Failed to create category:", error);
+    console.error("Gagal tambah kategori:", error);
     return NextResponse.json(
-      { message: "Gagal membuat kategori baru", error: error.message },
+      { error: "Gagal tambah kategori" },
       { status: 500 }
     );
   }
